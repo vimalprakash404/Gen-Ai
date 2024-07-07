@@ -1,4 +1,4 @@
-import  { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import chefImage from "./assets/bot.jpeg";
 import profileImage from "./assets/profile.png";
 import DOMPurify from "dompurify";
@@ -8,15 +8,10 @@ import axios from "axios";
 marked.use({ gfm: true });
 
 function App() {
-
-
   const inputRef = useRef(null);
   const buttonRef = useRef(null);
-  const chatContainerRef = useRef(null); // Ref for the chat container
+  const chatContainerRef = useRef(null);
   const [data, setData] = useState([]);
-
-
-
 
   function handleOnChange() {
     if (inputRef.current.value !== "") {
@@ -28,23 +23,21 @@ function App() {
 
   async function onSubmitPrompt() {
     setData([...data, { me: inputRef.current.value }]);
-    
+    const input = inputRef.current.value;
     const res = await getResultFromServer(inputRef.current.value);
-    
-    buttonRef.current.hidden = true; // Hide button after submitting
-    setData([...data, { me: inputRef.current.value }, {bot : res}]);
+
+    buttonRef.current.hidden = true;
+    setData([...data, { me: input }, { bot: res }]);
     inputRef.current.value = "";
   }
 
-  async function  getResultFromServer(input) {
+  async function getResultFromServer(input) {
     inputRef.current.value = "";
-    const res =  await axios.get(`/api/${input}`);
-    
-    return res.data ;
+    const res = await axios.get(`/api/${input}`);
+    return res.data;
   }
 
   useEffect(() => {
-    // Scroll to the bottom whenever `data` changes
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
@@ -55,11 +48,11 @@ function App() {
       <h1 style={{ padding: "10px", marginBottom: "0" }}>Gen Chat</h1>
       <div style={{ margin: "0", flexGrow: "1", overflow: "hidden" }}>
         <div 
-          ref={chatContainerRef} // Attach ref to chat container
+          ref={chatContainerRef} 
           style={{ 
             width: "100%", 
             height: "100%", 
-            overflowY: "auto", // Enable vertical scrolling
+            overflowY: "auto", 
             padding: "10px" 
           }}
         >
@@ -68,7 +61,13 @@ function App() {
               return (
                 <div key={index} style={{ display: "flex", marginTop: "10px", textAlign: "right" }}>
                   <article
-                    style={{ margin: "0", flexGrow: "1", marginRight: "10px", marginLeft: "10px" }}
+                    style={{ 
+                      margin: "0", 
+                      flexGrow: "1", 
+                      marginRight: "10px", 
+                      marginLeft: "10px",
+                      overflowX: "auto" // Add horizontal scrolling
+                    }}
                     dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked(item.me)) }}
                   />
                   <img
@@ -84,10 +83,16 @@ function App() {
                   <img
                     src={chefImage}
                     alt="Bot"
-                    style={{ width: "50px", height: "50px", borderRadius: "100%", marginLeft: "10px" }}
+                    style={{ width: "40px", height: "40px", borderRadius: "100%", marginLeft: "10px" }}
                   />
                   <article
-                    style={{ margin: "0", flexGrow: "1", marginRight: "10px", marginLeft: "10px" }}
+                    style={{ 
+                      margin: "0", 
+                      flexGrow: "1", 
+                      marginRight: "10px", 
+                      marginLeft: "10px",
+                      overflowX: "auto" // Add horizontal scrolling
+                    }}
                     dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked(item.bot)) }}
                   />
                 </div>
